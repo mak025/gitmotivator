@@ -1,16 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { getGitHubLoginUrl } from '../lib/auth'
-
-const loginUrl = computed(() => getGitHubLoginUrl())
-
-function handleLogin() {
-  if (!loginUrl.value) {
-    return
-  }
-
-  window.location.assign(loginUrl.value)
-}
+import LoginForm from './LoginForm.vue'
 </script>
 
 <template>
@@ -23,22 +12,7 @@ function handleLogin() {
         this app once the backend has created a session.
       </p>
 
-      <button
-        type="button"
-        class="login-button"
-        :disabled="!loginUrl"
-        @click="handleLogin"
-      >
-        Continue with GitHub
-      </button>
-
-      <p v-if="loginUrl" class="hint">
-        This opens <code>{{ loginUrl }}</code>
-      </p>
-      <p v-else class="hint error">
-        Set <code>VITE_API_URL</code> in your frontend env files so the login button knows where to
-        send users.
-      </p>
+      <LoginForm />
     </section>
   </main>
 </template>
