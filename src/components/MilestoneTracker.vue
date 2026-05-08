@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Trophy } from 'lucide-vue-next'
 import type { MilestoneProgress } from '../composables/useDashboard'
 
 defineProps<{
@@ -9,32 +8,53 @@ defineProps<{
 </script>
 
 <template>
-  <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-    <div class="flex justify-between items-center mb-6">
-      <h3 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
-        <Trophy class="h-5 w-5 text-yellow-500" />
-        Milestone Progress
-      </h3>
-      <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
-        Level {{ milestone.currentLevel }}
-      </span>
+  <div class="bg-gradient-to-b from-white/[0.035] to-white/[0.015] border border-premium-border rounded-2xl p-8 md:p-10 shadow-2xl">
+    <div class="text-premium-muted uppercase tracking-[0.04em] text-sm font-bold mb-2">Fælles milestone</div>
+    <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight">Byg det fedeste produkt 💪</h1>
+    <p class="text-lg text-[#c3ccda] mb-10">Sammen når vi længere.</p>
+
+    <div class="mb-12">
+      <div class="h-[42px] bg-white/10 rounded-full overflow-hidden relative border border-white/5">
+        <div 
+          class="h-full bg-gradient-to-r from-premium-green to-[#58d878] flex items-center justify-end pr-6 text-white font-black text-lg transition-all duration-1000 ease-out shadow-[0_0_30px_rgba(62,228,124,0.32)]"
+          :style="{ width: `${milestone.percentage}%` }"
+        >
+          {{ Math.round(milestone.percentage) }}%
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-5 mt-4 text-premium-muted text-xs md:text-sm">
+        <div class="relative pt-6 before:content-[''] before:absolute before:top-0 before:left-2 before:w-0.5 before:h-2 before:bg-premium-muted">
+          <strong class="block text-premium-text font-medium mb-1">0%</strong>
+          <span class="hidden sm:inline">Start</span>
+        </div>
+        <div class="relative pt-6 before:content-[''] before:absolute before:top-0 before:left-2 before:w-0.5 before:h-2 before:bg-premium-muted">
+          <strong class="block text-premium-text font-medium mb-1">25%</strong>
+          <span class="hidden sm:inline">Fundament</span>
+        </div>
+        <div class="relative pt-6 before:content-[''] before:absolute before:top-0 before:left-2 before:w-0.5 before:h-2 before:bg-premium-muted">
+          <strong class="block text-premium-text font-medium mb-1">50%</strong>
+          <span class="hidden sm:inline">Funktionalitet</span>
+        </div>
+        <div class="relative pt-6 before:content-[''] before:absolute before:top-0 before:left-2 before:w-0.5 before:h-2 before:bg-premium-muted">
+          <strong class="block text-premium-text font-medium mb-1">75%</strong>
+          <span class="hidden sm:inline">Polish</span>
+        </div>
+        <div class="relative pt-6 before:content-[''] before:absolute before:top-0 before:right-2 before:w-0.5 before:h-2 before:bg-premium-muted text-right">
+          <strong class="block text-premium-text font-medium mb-1">100%</strong>
+          <span class="hidden sm:inline">Launch 🎉</span>
+        </div>
+      </div>
     </div>
 
-    <div class="space-y-4">
-      <div class="flex justify-between text-sm font-medium text-slate-600">
-        <span>{{ totalCommits }} Total Commits</span>
-        <span>Target: {{ milestone.targetForNextLevel }}</span>
+    <div class="items-center justify-center gap-4 md:gap-6 flex flex-col md:flex-row">
+      <div class="text-center border-r border-premium-line px-2">
+        <div class="text-2xl md:text-3xl font-black text-premium-green mb-1">{{ totalCommits.toLocaleString() }}</div>
+        <div class="text-premium-muted text-xs md:text-sm uppercase font-bold tracking-wider">Commits</div>
       </div>
-
-      <div class="relative w-full h-4 bg-slate-100 rounded-full overflow-hidden">
-        <div
-            class="absolute top-0 left-0 h-full bg-blue-600 transition-all duration-500 ease-out"
-            :style="{ width: `${milestone.percentage}%` }"
-        ></div>
-      </div>
-
-      <div class="text-center text-sm text-slate-500 italic">
-        {{ milestone.targetForNextLevel - totalCommits }} more commits to reach Level {{ milestone.currentLevel + 1 }}!
+      <div class="text-center px-2">
+        <div class="text-2xl md:text-3xl font-black mb-1">47</div>
+        <div class="text-premium-muted text-xs md:text-sm uppercase font-bold tracking-wider">Dage tilbage</div>
       </div>
     </div>
   </div>

@@ -3,103 +3,26 @@ import LoginForm from './LoginForm.vue'
 </script>
 
 <template>
-  <main class="login-page">
-    <section class="card" aria-labelledby="login-title">
-      <p class="eyebrow">GitHub App sign in</p>
-      <h1 id="login-title">Log in with GitHub</h1>
-      <p class="copy">
-        Use your GitHub App backend to redirect users into GitHub OAuth, then send them back to
-        this app once the backend has created a session.
+  <main class="min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="mb-12">
+      <span class="text-6xl font-black text-premium-green drop-shadow-[0_0_20px_rgba(62,228,124,0.5)]">‹/›</span>
+    </div>
+
+    <section class="w-full max-w-[420px] bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-premium-border rounded-3xl p-10 shadow-2xl">
+      <h1 class="text-3xl font-black text-center mb-4 tracking-tight">Dev Leaderboard</h1>
+      <p class="text-center text-premium-muted mb-10 text-base leading-relaxed">
+        Connect your GitHub to start tracking progress and compete with your team.
       </p>
 
       <LoginForm />
     </section>
+
+    <div class="mt-8 text-premium-muted text-sm font-medium">
+      Built for developers by developers.
+    </div>
   </main>
 </template>
 
 <style scoped>
-.login-page {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-}
-
-.card {
-  width: min(100%, 520px);
-  padding: 32px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 24px;
-  background: rgba(15, 23, 42, 0.72);
-  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
-  backdrop-filter: blur(16px);
-}
-
-.eyebrow {
-  margin: 0 0 12px;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: #93c5fd;
-}
-
-h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  line-height: 1.05;
-  color: #f8fafc;
-}
-
-.copy {
-  margin: 16px 0 28px;
-  color: #cbd5e1;
-  font-size: 1rem;
-}
-
-.login-button {
-  width: 100%;
-  border: 0;
-  border-radius: 999px;
-  padding: 14px 20px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #0f172a;
-  background: linear-gradient(135deg, #ffffff 0%, #dbeafe 100%);
-  cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    opacity 0.15s ease;
-  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.25);
-}
-
-.login-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 36px rgba(59, 130, 246, 0.35);
-}
-
-.login-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-  box-shadow: none;
-}
-
-.hint {
-  margin: 16px 0 0;
-  color: #94a3b8;
-  font-size: 0.92rem;
-  word-break: break-word;
-}
-
-.hint code {
-  padding: 0.18rem 0.42rem;
-  border-radius: 6px;
-  background: rgba(15, 23, 42, 0.9);
-  color: #e2e8f0;
-}
-
-.error {
-  color: #fca5a5;
-}
 </style>
 

@@ -14,46 +14,101 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 p-6 md:p-12">
-    <div class="max-w-5xl mx-auto space-y-8">
-      <!-- Header -->
-      <header class="flex justify-between items-center">
-        <div class="flex items-center gap-3">
-          <div class="bg-blue-600 p-2 rounded-lg shadow-lg">
-            <LayoutDashboard class="h-6 w-6 text-white" />
-          </div>
-          <h1 class="text-2xl font-bold text-slate-900">GitHub Motivator</h1>
+  <div class="min-h-screen">
+    <!-- Header -->
+    <header class="max-w-[1180px] mx-auto flex justify-between items-center mb-8 py-8 px-6">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl font-extrabold text-premium-green">‹/›</span>
+        <h1 class="text-xl font-extrabold tracking-tight">Dev Leaderboard</h1>
+      </div>
+      <div class="flex items-center gap-4 text-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-premium-text">Synced with GitHub</span>
+          <span class="w-2.5 h-2.5 rounded-full bg-premium-green shadow-[0_0_15px_rgba(62,228,124,0.8)]"></span>
         </div>
         <button
           @click="fetchStats"
-          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-all shadow-sm"
+          class="flex items-center gap-2 text-premium-muted hover:text-premium-text transition-colors"
           :disabled="loading"
         >
-          <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
-          Refresh
+          <span class="text-xs">2 min ago</span>
+          <RefreshCw class="h-3.5 w-3.5" :class="{ 'animate-spin': loading }" />
         </button>
-      </header>
+      </div>
+    </header>
 
+    <main class="max-w-[1180px] mx-auto px-6 pb-12 space-y-10">
       <!-- Error Alert -->
-      <div v-if="error" class="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-700">
+      <div v-if="error" class="p-4 bg-red-900/20 border border-red-500/50 rounded-md flex items-center gap-3 text-red-400">
         <AlertCircle class="h-5 w-5 shrink-0" />
         <p class="text-sm font-medium">{{ error }}</p>
       </div>
 
-      <!-- Repo Input -->
-      <RepoInput :loading="loading" @track="trackRepository" />
+      <!-- Repo Input Section -->
+      <section>
+        <RepoInput :loading="loading" @track="trackRepository" />
+      </section>
 
-      <!-- Stats Grid -->
-      <div v-if="stats && stats.repositoryUrl" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <MilestoneTracker :milestone="stats.milestone" :totalCommits="stats.totalCommits" />
-        <Leaderboard :leaderboard="stats.leaderboard" />
+      <!-- Stats Sections -->
+      <div v-if="stats && stats.repositoryUrl" class="space-y-12">
+        <section>
+          <MilestoneTracker :milestone="stats.milestone" :totalCommits="stats.totalCommits" />
+        </section>
+
+        <section>
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-black tracking-tight uppercase">Leaderboard</h2>
+          </div>
+
+          <Leaderboard :leaderboard="stats.leaderboard" />
+        </section>
+
+        <!-- New Cards Section -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <article class="bg-gradient-to-b from-white/[0.035] to-white/[0.015] border border-premium-border rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-premium-muted text-xs font-bold uppercase mb-6">Top repo</h3>
+            <div class="text-xl font-extrabold mb-2">{{ stats.repositoryUrl.split('/').pop() }}</div>
+            <div class="text-premium-muted text-sm">{{ stats.totalCommits }} commits</div>
+            <div class="h-2.5 bg-white/10 rounded-full mt-6 overflow-hidden">
+              <div class="h-full bg-premium-green w-2/3"></div>
+            </div>
+          </article>
+
+          <article class="bg-gradient-to-b from-white/[0.035] to-white/[0.015] border border-premium-border rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-premium-muted text-xs font-bold uppercase mb-6">Mest aktive dag</h3>
+            <div class="text-xl font-extrabold mb-2">📅 Tirsdag</div>
+            <div class="text-premium-muted text-sm">18% af alle commits</div>
+          </article>
+
+          <article class="bg-gradient-to-b from-white/[0.035] to-white/[0.015] border border-premium-border rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-premium-muted text-xs font-bold uppercase mb-6">Aktivitet</h3>
+            <div class="flex items-end gap-2 h-[70px] mb-4">
+              <div class="w-3.5 bg-gradient-to-t from-premium-green-dark to-premium-green rounded-t-sm h-[40%]"></div>
+              <div class="w-3.5 bg-gradient-to-t from-premium-green-dark to-premium-green rounded-t-sm h-[60%]"></div>
+              <div class="w-3.5 bg-gradient-to-t from-premium-green-dark to-premium-green rounded-t-sm h-[50%]"></div>
+              <div class="w-3.5 bg-gradient-to-t from-premium-green-dark to-premium-green rounded-t-sm h-[80%]"></div>
+              <div class="w-3.5 bg-gradient-to-t from-premium-green-dark to-premium-green rounded-t-sm h-[100%]"></div>
+            </div>
+            <div class="text-xl font-extrabold text-premium-green">↑ 23%</div>
+            <div class="text-premium-muted text-sm">vs. sidste uge</div>
+          </article>
+        </section>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!loading" class="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
-        <p class="text-slate-400 font-medium">No repository being tracked yet.</p>
-        <p class="text-slate-400 text-sm">Enter a GitHub URL above to start motivating!</p>
+      <div v-else-if="!loading" class="text-center py-24 bg-gradient-to-b from-white/[0.035] to-white/[0.015] rounded-2xl border border-premium-border border-dashed">
+        <div class="flex justify-center mb-6">
+          <div class="p-6 bg-premium-bg rounded-full border border-premium-border">
+            <LayoutDashboard class="h-10 w-10 text-premium-muted" />
+          </div>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">No repository being tracked</h2>
+        <p class="text-premium-muted text-base max-w-md mx-auto">Enter a GitHub repository URL above to start motivating your team with premium insights!</p>
       </div>
-    </div>
+
+      <footer class="text-center text-premium-muted text-sm pt-8">
+        Data hentes fra GitHub API • Opdateres hvert 5. minut
+      </footer>
+    </main>
   </div>
 </template>

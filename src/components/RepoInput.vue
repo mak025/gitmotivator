@@ -20,28 +20,28 @@ function handleSubmit() {
 </script>
 
 <template>
-  <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-    <h3 class="text-lg font-semibold text-slate-800 mb-4">Track Repository</h3>
-    <form @submit.prevent="handleSubmit" class="flex gap-2">
+  <div class="bg-gradient-to-b from-white/[0.035] to-white/[0.015] border border-premium-border rounded-2xl p-8 shadow-2xl">
+    <h3 class="text-sm font-bold uppercase tracking-wider text-premium-muted mb-4">Track a new repository</h3>
+    <form @submit.prevent="handleSubmit" class="flex flex-col sm:flex-row gap-4">
       <div class="relative flex-1">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search class="h-5 w-5 text-black " />
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <Search class="h-5 w-5 text-premium-muted" />
         </div>
         <input
           v-model="repoUrl"
           type="text"
           placeholder="https://github.com/owner/repo"
-          class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          class="block w-full pl-12 pr-4 py-3 bg-premium-bg border border-premium-border rounded-xl text-base text-premium-text placeholder:text-premium-muted/50 focus:outline-none focus:ring-2 focus:ring-premium-green/20 focus:border-premium-green transition-all"
           :disabled="loading"
         />
       </div>
       <button
         type="submit"
-        class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        class="px-8 py-3 bg-premium-green hover:bg-premium-green-dark text-premium-bg text-base font-black rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(62,228,124,0.3)] active:scale-95"
         :disabled="loading || !repoUrl.trim()"
       >
         <span v-if="loading">Loading...</span>
-        <span v-else>Track</span>
+        <span v-else>Track Repository</span>
       </button>
     </form>
   </div>
