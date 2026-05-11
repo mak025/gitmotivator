@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 import { useDashboard } from '../composables/useDashboard'
+import { sendCommitCountToPi } from '../services/senseHatService'
 import RepoInput from './RepoInput.vue'
 import MilestoneTracker from './MilestoneTracker.vue'
 import Leaderboard from './Leaderboard.vue'
@@ -8,8 +9,29 @@ import { LayoutDashboard, RefreshCw, AlertCircle } from 'lucide-vue-next'
 
 const { stats, loading, error, fetchStats, trackRepository } = useDashboard()
 
-onMounted(() => {
-  fetchStats()
+let piInterval: any = null
+
+// Watch for changes in totalCommits and sync with Pi
+watch(() => stats.value?.totalCommits, async (newCount) => {
+  if (newCount !== undefined) {
+    await sendCommitCountToPi(newCount)
+  }
+})
+
+onMounted(async () => {
+  await fetchStats()
+  
+  // Set up 1-minute interval for background stats refresh
+  // The Pi sync will be triggered by the watch above
+  piInterval = setInterval(async () => {
+    await fetchStats()
+  }, 60000) // 1 minute
+})
+
+onUnmounted(() => {
+  if (piInterval) {
+    clearInterval(piInterval)
+  }
 })
 </script>
 
