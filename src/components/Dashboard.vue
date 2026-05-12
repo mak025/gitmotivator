@@ -21,7 +21,7 @@ watch(() => stats.value?.totalCommits, async (newCount) => {
 onMounted(async () => {
   await fetchStats()
   
-  // Set up 1-minute interval for background stats refresh
+  // Set up a 5-minute interval for background stats refresh
   // The Pi sync will be triggered by the watch above
   piInterval = setInterval(async () => {
     await fetchStats()
