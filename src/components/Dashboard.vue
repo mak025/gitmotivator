@@ -4,6 +4,7 @@ import { useDashboard } from '../composables/useDashboard'
 import { sendCommitCountToPi } from '../services/senseHatService'
 import RepoInput from './RepoInput.vue'
 import MilestoneTracker from './MilestoneTracker.vue'
+import MilestoneList from './MilestoneList.vue'
 import Leaderboard from './Leaderboard.vue'
 import { LayoutDashboard, RefreshCw, AlertCircle } from 'lucide-vue-next'
 
@@ -83,6 +84,10 @@ onUnmounted(() => {
           </div>
 
           <Leaderboard :leaderboard="stats.leaderboard" />
+        </section>
+
+        <section>
+          <MilestoneList />
         </section>
 
         <!-- New Cards Section -->

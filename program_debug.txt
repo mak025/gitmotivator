@@ -81,21 +81,32 @@ builder.Services.AddAuthentication(options =>
 
     options.Events.OnCreatingTicket = async context =>
     {
-        var username = context.Identity?.FindFirst(ClaimTypes.Name)?.Value;
-        var email = context.Identity?.FindFirst(ClaimTypes.Email)?.Value;
+        var identity = context.Identity;
+        if (identity == null) return;
+
+        var username = identity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var login = identity.FindFirst("urn:github:login")?.Value ?? 
+                    identity.FindFirst(ClaimTypes.Name)?.Value ?? 
+                    username;
+        var email = identity.FindFirst(ClaimTypes.Email)?.Value;
         var accessToken = context.AccessToken;
 
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(accessToken)) return;
+
+        // Ensure the identity has a Name claim that matches our database Username (the numeric ID)
+        // This ensures User.Identity.Name will match the database record
+        if (identity.FindFirst(ClaimTypes.Name)?.Value != username)
+        {
+            var existingNameClaim = identity.FindFirst(ClaimTypes.Name);
+            if (existingNameClaim != null) identity.RemoveClaim(existingNameClaim);
+            identity.AddClaim(new Claim(ClaimTypes.Name, username));
+        }
 
         using var scope = context.HttpContext.RequestServices.CreateScope();
         var githubService = scope.ServiceProvider.GetRequiredService<IGithubService>();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        int commitCount = await githubService.GetUserCommitCountAsync(username, accessToken);
-        var client = new GitHubClient(new ProductHeaderValue("GithubMotivator"))
-        {
-            Credentials = new Credentials(accessToken)
-        };
+        int commitCount = await githubService.GetUserCommitCountAsync(login, accessToken);
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user == null)
         {
@@ -103,7 +114,7 @@ builder.Services.AddAuthentication(options =>
             {
                 Username = username,
                 Email = email ?? "",
-                Name = context.Identity?.FindFirst("urn:github:name")?.Value ?? username,
+                Name = identity.FindFirst("urn:github:name")?.Value ?? login,
                 GitHubToken = accessToken,
                 Commits = commitCount,
                 Type = GithubMotivator.Models.User.UserType.Contributor
@@ -126,7 +137,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173", "https://githubmotivator20260512120901-cgdpd7fud8amfvd0.swedencentral-01.azurewebsites.net")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()
@@ -166,7 +177,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 
 app.UseCookiePolicy();
 app.UseAuthentication();

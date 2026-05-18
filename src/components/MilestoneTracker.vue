@@ -10,7 +10,7 @@ defineProps<{
 <template>
   <div class="bg-gradient-to-b from-white/[0.035] to-white/[0.015] border border-premium-border rounded-2xl p-8 md:p-10 shadow-2xl">
     <div class="text-premium-muted uppercase tracking-[0.04em] text-sm font-bold mb-2">Fælles milestone</div>
-    <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight">Byg det fedeste produkt 💪</h1>
+    <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight">{{ milestone.message }}</h1>
     <p class="text-lg text-[#c3ccda] mb-10">Sammen når vi længere.</p>
 
     <div class="mb-12">
