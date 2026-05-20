@@ -3,7 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useDashboard } from '../composables/useDashboard'
 import { Plus, Target, MessageSquare, CheckCircle2, ListTodo, X } from 'lucide-vue-next'
 
-const { milestones, repositories, fetchRepositories, createMilestone, stats, loading, error } = useDashboard()
+const { milestones, repositories, fetchRepositories, createMilestone, stats, loading } = useDashboard()
 
 const showForm = ref(false)
 const isSubmitting = ref(false)
