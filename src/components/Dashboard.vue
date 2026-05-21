@@ -1,23 +1,59 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, watch } from 'vue'
+import { onMounted, onUnmounted, watch, ref } from 'vue'
 import { useDashboard } from '../composables/useDashboard'
-import { sendCommitCountToPi } from '../services/senseHatService'
+import { sendCommitCountToPi, triggerCelebrationOnPi, clearPiDisplay } from '../services/senseHatService'
 import RepoInput from './RepoInput.vue'
 import MilestoneTracker from './MilestoneTracker.vue'
 import MilestoneList from './MilestoneList.vue'
 import Leaderboard from './Leaderboard.vue'
 import { LayoutDashboard, RefreshCw, AlertCircle } from 'lucide-vue-next'
 
-const { stats, loading, error, fetchStats, trackRepository } = useDashboard()
+const { stats, milestones, loading, error, fetchStats, trackRepository } = useDashboard()
 
+const lastCelebratedMilestoneId = ref<number | null>(null)
 let piInterval: any = null
+
+// Reset celebration state when repo changes
+watch(() => stats.value?.repositoryId, () => {
+  lastCelebratedMilestoneId.value = null
+})
 
 // Watch for changes in totalCommits and sync with Pi
 watch(() => stats.value?.totalCommits, async (newCount) => {
-  if (newCount !== undefined) {
+  if (newCount !== undefined && newCount !== null) {
+    // Check if we hit a milestone threshold
+    // We check custom milestones for the current repository
+    const milestone = milestones.value.find(m => 
+      m.repositoryId === stats.value?.repositoryId && 
+      m.commitThreshold === newCount
+    )
+    
+    if (milestone && lastCelebratedMilestoneId.value !== milestone.id) {
+      lastCelebratedMilestoneId.value = milestone.id
+      // Trigger celebration - this will stop the initial message on the Pi
+      // and play the celebration message
+      await triggerCelebrationOnPi(milestone.message)
+      
+      // Wait 3 seconds for the celebration to play out fully
+      await new Promise(resolve => setTimeout(resolve, 3000))
+    }
+    
+    // Always sync the current count (either normal update or returning to count after celebration)
     await sendCommitCountToPi(newCount)
   }
 })
+
+async function handleTrack(url: string) {
+  // Instant feedback on Pi: clear the display while we fetch new repo data
+  await clearPiDisplay()
+  
+  await trackRepository(url)
+  
+  // Update Pi with the new commit count immediately after tracking
+  if (stats.value?.totalCommits !== undefined && stats.value?.totalCommits !== null) {
+    await sendCommitCountToPi(stats.value.totalCommits)
+  }
+}
 
 onMounted(async () => {
   await fetchStats()
@@ -69,7 +105,7 @@ onUnmounted(() => {
 
       <!-- Repo Input Section -->
       <section>
-        <RepoInput :loading="loading" @track="trackRepository" />
+        <RepoInput :loading="loading" @track="handleTrack" />
       </section>
 
       <!-- Stats Sections -->
